@@ -143,6 +143,8 @@ public class ExpenseService {
                 "Submitted %s for %s".formatted(expense.getNumber(), expense.getAmount()),
                 Map.of("amount", expense.getAmount(), "category", expense.getCategory().getName()));
         notifyApprovers(user, expense);
+        // Flush so the returned version is the one the client must send with its next change.
+        expenses.flush();
         return toResponse(user, expense);
     }
 
