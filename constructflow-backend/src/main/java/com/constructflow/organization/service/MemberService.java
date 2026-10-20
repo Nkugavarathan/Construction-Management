@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -112,6 +113,13 @@ public class MemberService {
         }
         memberships.flush();
         return MemberResponse.of(membership);
+    }
+
+    /** Recipients for role-targeted notifications (e.g. all finance officers). */
+    @Transactional(readOnly = true)
+    public List<UUID> activeUserIdsWithRoles(UUID organizationId, List<Role> roles) {
+        return memberships.findByOrganizationIdAndRoleInAndStatus(organizationId, roles, MembershipStatus.ACTIVE)
+                .stream().map(m -> m.getUser().getId()).toList();
     }
 
     /** Used by other modules (e.g. project membership) to check that a user is an active member. */

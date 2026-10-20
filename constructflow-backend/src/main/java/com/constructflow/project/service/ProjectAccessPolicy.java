@@ -69,6 +69,11 @@ public class ProjectAccessPolicy {
         return memberships.existsByProjectIdAndUserId(project.getId(), user.userId());
     }
 
+    /** Whether some other user (e.g. a proposed task assignee) is on the project. */
+    public boolean isUserOnProject(UUID projectId, UUID userId) {
+        return memberships.existsByProjectIdAndUserId(projectId, userId);
+    }
+
     public boolean isProjectManager(CurrentUser user, Project project) {
         return memberships.existsByProjectIdAndUserIdAndProjectRole(project.getId(), user.userId(), ProjectRole.MANAGER);
     }

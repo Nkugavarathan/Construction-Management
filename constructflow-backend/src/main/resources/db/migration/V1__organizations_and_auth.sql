@@ -4,7 +4,7 @@ create table organizations (
     id                          uuid primary key,
     name                        varchar(160) not null,
     slug                        varchar(80)  not null unique,
-    currency_code               char(3)      not null default 'LKR',
+    currency_code               varchar(3)   not null default 'LKR' check (currency_code ~ '^[A-Z]{3}$'),
     timezone                    varchar(64)  not null default 'Asia/Colombo',
     expense_approval_threshold  numeric(15,2) not null default 100000.00 check (expense_approval_threshold >= 0),
     version                     bigint       not null default 0,
