@@ -240,6 +240,14 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
+    public long countOpenAssignedTo(CurrentUser user) {
+        return tasks.count((root, query, cb) -> cb.and(
+                cb.equal(root.get("assignee").get("id"), user.userId()),
+                cb.equal(root.get("project").get("organizationId"), user.organizationId()),
+                root.get("status").in(TaskStatus.OPEN)));
+    }
+
+    @Transactional(readOnly = true)
     public long countOpenInMilestone(UUID milestoneId) {
         return tasks.countByMilestoneIdAndStatusIn(milestoneId, TaskStatus.OPEN);
     }

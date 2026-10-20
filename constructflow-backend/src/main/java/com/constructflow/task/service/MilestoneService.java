@@ -12,6 +12,7 @@ import com.constructflow.project.service.ProjectAccessPolicy;
 import com.constructflow.security.CurrentUser;
 import com.constructflow.task.dto.TaskDtos.MilestoneRequest;
 import com.constructflow.task.dto.TaskDtos.MilestoneResponse;
+import com.constructflow.task.dto.TaskDtos.UpcomingMilestone;
 import com.constructflow.task.entity.Milestone;
 import com.constructflow.task.repository.MilestoneRepository;
 import org.springframework.stereotype.Service;
@@ -93,9 +94,16 @@ public class MilestoneService {
         return toResponse(milestone, progress, organizations.today(user.organizationId()));
     }
 
+    /** Pending milestones due by {@code until} (including overdue ones) across the given projects. */
     @Transactional(readOnly = true)
-    public List<Milestone> upcoming(Collection<UUID> projectIds, LocalDate until) {
-        return projectIds.isEmpty() ? List.of() : milestones.findPendingDueBy(projectIds, until);
+    public List<UpcomingMilestone> upcoming(Collection<UUID> projectIds, LocalDate until, int limit) {
+        if (projectIds.isEmpty()) {
+            return List.of();
+        }
+        return milestones.findPendingDueBy(projectIds, until).stream().limit(limit)
+                .map(m -> new UpcomingMilestone(m.getId(), m.getName(), m.getDueDate(), m.getProject().getId(),
+                        m.getProject().getCode(), m.getProject().getName()))
+                .toList();
     }
 
     private static MilestoneResponse toResponse(Milestone m, int progress, LocalDate today) {

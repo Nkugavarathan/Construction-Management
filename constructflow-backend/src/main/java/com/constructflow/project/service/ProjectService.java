@@ -213,6 +213,35 @@ public class ProjectService {
         return detail(user, project);
     }
 
+    @Transactional(readOnly = true)
+    public Map<ProjectStatus, Long> statusCounts(List<UUID> projectIds) {
+        Map<ProjectStatus, Long> counts = new LinkedHashMap<>();
+        for (ProjectStatus status : ProjectStatus.values()) {
+            counts.put(status, 0L);
+        }
+        if (!projectIds.isEmpty()) {
+            projects.countByStatus(projectIds).forEach(row -> counts.put(row.getStatus(), row.getTotal()));
+        }
+        return counts;
+    }
+
+    /** Active projects among the given IDs with progress and (where visible) spend, for dashboards. */
+    @Transactional(readOnly = true)
+    public List<ProjectSummaryResponse> activeSummaries(CurrentUser user, List<UUID> projectIds) {
+        if (projectIds.isEmpty()) {
+            return List.of();
+        }
+        List<Project> active = projects.findByIdInAndStatus(projectIds, ProjectStatus.ACTIVE);
+        List<UUID> ids = active.stream().map(Project::getId).toList();
+        Map<UUID, Integer> progress = tasks.progressByProject(ids);
+        Set<UUID> financeVisible = new HashSet<>(financeVisibleIds(user, ids));
+        Map<UUID, BigDecimal> spend = expenses.approvedSpendByProject(financeVisible);
+        return active.stream()
+                .map(p -> ProjectMapper.toSummary(p, progress.getOrDefault(p.getId(), 0),
+                        financeVisible.contains(p.getId()) ? spend.getOrDefault(p.getId(), BigDecimal.ZERO) : null))
+                .toList();
+    }
+
     private ProjectResponse detail(CurrentUser user, Project project) {
         int progress = tasks.progressByProject(List.of(project.getId())).getOrDefault(project.getId(), 0);
         ProjectRole myRole = projectMemberships.findByProjectIdAndUserId(project.getId(), user.userId())
@@ -221,7 +250,8 @@ public class ProjectService {
                 access.canViewFinance(user, project));
     }
 
-    private List<UUID> financeVisibleIds(CurrentUser user, List<UUID> pageIds) {
+    /** Of the given projects, those whose finances this user may see. */
+    public List<UUID> financeVisibleIds(CurrentUser user, List<UUID> pageIds) {
         if (!user.has(com.constructflow.security.Permission.FINANCE_READ)) {
             return List.of();
         }

@@ -3,7 +3,7 @@ spring:
   application:
     name: constructflow
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/constructflow}
+    url: ${DB_URL:jdbc:postgresql://localhost:5434/constructflow}
     username: ${DB_USERNAME:constructflow}
     password: ${DB_PASSWORD:constructflow}
   jpa:

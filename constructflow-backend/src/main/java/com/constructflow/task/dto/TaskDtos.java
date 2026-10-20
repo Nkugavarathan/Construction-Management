@@ -59,6 +59,10 @@ public final class TaskDtos {
                                     boolean overdue, Long version) {
     }
 
+    public record UpcomingMilestone(UUID id, String name, LocalDate dueDate, UUID projectId, String projectCode,
+                                    String projectName) {
+    }
+
     public record SiteReportRequest(@NotNull @PastOrPresent LocalDate reportDate, @Size(max = 80) String weather,
                                     @NotNull @Min(0) @Max(10000) Integer workforceCount,
                                     @NotBlank @Size(max = 4000) String workPerformed,

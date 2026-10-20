@@ -322,6 +322,35 @@ public class ExpenseService {
         return result;
     }
 
+    /** Submitted expenses this user could approve right now (their approval queue size). */
+    @Transactional(readOnly = true)
+    public long countDecidable(CurrentUser user) {
+        if (!user.has(com.constructflow.security.Permission.EXPENSE_APPROVE)) {
+            return 0;
+        }
+        return search(user, null, ExpenseStatus.SUBMITTED, null, null, null, false,
+                org.springframework.data.domain.PageRequest.of(0, 500)).content().stream()
+                .filter(ExpenseResponse::canDecide).count();
+    }
+
+    /** Approved spend per category across projects, largest first (for the dashboard chart). */
+    @Transactional(readOnly = true)
+    public List<CategorySummary> approvedByCategory(Collection<UUID> projectIds) {
+        if (projectIds.isEmpty()) {
+            return List.of();
+        }
+        return expenses.totalsByCategory(projectIds, List.of(ExpenseStatus.APPROVED)).stream()
+                .map(r -> new CategorySummary(r.getCategoryId(), r.getCategoryName(), BigDecimal.ZERO, r.getTotal(),
+                        BigDecimal.ZERO, BigDecimal.ZERO))
+                .sorted((a, b) -> b.approved().compareTo(a.approved()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal totalForProjects(Collection<UUID> projectIds, ExpenseStatus status) {
+        return projectIds.isEmpty() ? BigDecimal.ZERO : expenses.total(projectIds, status);
+    }
+
     @Transactional(readOnly = true)
     public long countPending(UUID projectId) {
         return expenses.countByProjectIdAndStatus(projectId, ExpenseStatus.SUBMITTED);

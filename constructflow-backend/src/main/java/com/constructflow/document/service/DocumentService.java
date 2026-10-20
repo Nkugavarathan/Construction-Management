@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
@@ -223,10 +222,5 @@ public class DocumentService {
 
     private static String blank(String value) {
         return value == null || value.isBlank() ? null : value.trim();
-    }
-
-    @SuppressWarnings("unused")
-    private static Comparator<DocumentVersion> newestFirst() {
-        return Comparator.comparingInt(DocumentVersion::getVersionNo).reversed();
     }
 }
