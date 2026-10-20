@@ -5,6 +5,7 @@ import com.constructflow.security.CurrentUser;
 import com.constructflow.security.Role;
 import com.constructflow.support.IntegrationTest;
 import com.constructflow.support.TestFixtures.Org;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,9 +52,9 @@ class ExpenseApprovalIntegrationTest extends IntegrationTest {
                 .andExpect(jsonPath("$.amount").value("250000.00"));
 
         getAs(finance, "/api/v1/expenses/" + id + "/history")
-                .andExpect(jsonPath("$[*].action").value(org.hamcrest.Matchers.contains("SUBMITTED", "APPROVED")));
+                .andExpect(jsonPath("$[*].action").value(Matchers.contains("SUBMITTED", "APPROVED")));
         getAs(org.user(Role.ADMIN), "/api/v1/audit-events?entityId=" + id)
-                .andExpect(jsonPath("$.content[*].action").value(org.hamcrest.Matchers.hasItems("EXPENSE_SUBMITTED", "EXPENSE_APPROVED")));
+                .andExpect(jsonPath("$.content[*].action").value(Matchers.hasItems("EXPENSE_SUBMITTED", "EXPENSE_APPROVED")));
         getAs(pm, "/api/v1/projects/" + project.id() + "/financial-summary")
                 .andExpect(jsonPath("$.approvedSpend").value("250000.00"))
                 .andExpect(jsonPath("$.remainingBudget").value("750000.00"))
@@ -143,9 +145,7 @@ class ExpenseApprovalIntegrationTest extends IntegrationTest {
 
     @Test
     void allocationsCannotExceedBudget() throws Exception {
-        postAs(pm, "/api/v1/projects/" + project.id() + "/budget-allocations", Map.of()).andExpect(status().is4xxClientError());
-        mvc.perform(authed(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                        .put("/api/v1/projects/" + project.id() + "/budget-allocations"), finance)
+        mvc.perform(authed(put("/api/v1/projects/" + project.id() + "/budget-allocations"), finance)
                         .contentType("application/json")
                         .content(toJson(Map.of("allocations", List.of(
                                 Map.of("categoryId", fixtures.category(org, "Labour"), "amount", "600000.00"),

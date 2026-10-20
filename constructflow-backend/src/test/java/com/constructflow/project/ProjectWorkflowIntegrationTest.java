@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,8 +133,7 @@ class ProjectWorkflowIntegrationTest extends IntegrationTest {
     void removingMemberWithOpenTasksIsBlocked() throws Exception {
         postAs(pm, "/api/v1/projects/" + project.id() + "/tasks",
                 Map.of("title", "Assigned", "priority", "LOW", "assigneeId", engineer.userId()));
-        mvc.perform(authed(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                        .delete("/api/v1/projects/" + project.id() + "/members/" + engineer.userId()), pm))
+        mvc.perform(authed(delete("/api/v1/projects/" + project.id() + "/members/" + engineer.userId()), pm))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("MEMBER_HAS_OPEN_TASKS"));
     }
 

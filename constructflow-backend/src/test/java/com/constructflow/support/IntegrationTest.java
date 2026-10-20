@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import tools.jackson.databind.json.JsonMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -59,7 +59,7 @@ public abstract class IntegrationTest {
         return mvc.perform(authed(patch(url), user).contentType(MediaType.APPLICATION_JSON).content(toJson(body)));
     }
 
-    protected MockHttpServletRequestBuilder authed(MockHttpServletRequestBuilder request, CurrentUser user) {
+    protected <B extends AbstractMockHttpServletRequestBuilder<B>> B authed(B request, CurrentUser user) {
         return request.header("Authorization", "Bearer " + fixtures.token(user));
     }
 
