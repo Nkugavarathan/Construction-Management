@@ -1,0 +1,54 @@
+# Local development stack.
+#   docker compose up -d postgres            -> database only (run apps from your IDE / terminal)
+#   docker compose --profile app up --build  -> database + backend + frontend in containers
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: constructflow
+      POSTGRES_USER: constructflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-constructflow}
+    ports:
+      - "5432:5432"
+    volumes:
+      # PostgreSQL 18 images keep data under /var/lib/postgresql (not /var/lib/postgresql/data).
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U constructflow -d constructflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    profiles: ["app"]
+    build: ./constructflow-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/constructflow
+      DB_USERNAME: constructflow
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-constructflow}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-only-secret-change-me-0123456789abcdef}
+      ALLOWED_ORIGINS: http://localhost:3000
+      STORAGE_LOCAL_ROOT: /app/data/uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/app/data/uploads
+
+  frontend:
+    profiles: ["app"]
+    build:
+      context: ./constructflow-frontend
+      args:
+        BACKEND_URL: http://backend:8080
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+  uploads:

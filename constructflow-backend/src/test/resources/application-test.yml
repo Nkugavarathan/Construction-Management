@@ -1,0 +1,11 @@
+app:
+  auth:
+    jwt-secret: test-only-secret-0123456789abcdef0123456789abcdef
+    cookie-secure: false
+    login-rate-limit-per-minute: 1000
+  storage:
+    local-root: ${java.io.tmpdir}/constructflow-test-uploads
+  scheduling:
+    enabled: false
+  seed:
+    enabled: false

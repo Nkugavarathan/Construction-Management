@@ -1,0 +1,12 @@
+# Local development against docker-compose PostgreSQL.
+app:
+  auth:
+    # Development-only key. Never reuse outside local development.
+    jwt-secret: ${JWT_SECRET:local-dev-only-secret-change-me-0123456789abcdef}
+    cookie-secure: false
+  seed:
+    enabled: true
+
+logging:
+  level:
+    com.constructflow: DEBUG

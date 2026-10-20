@@ -1,0 +1,71 @@
+# Shared defaults. No secrets here: every secret comes from an environment variable.
+spring:
+  application:
+    name: constructflow
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/constructflow}
+    username: ${DB_USERNAME:constructflow}
+    password: ${DB_PASSWORD:constructflow}
+  jpa:
+    # Flyway owns the schema; Hibernate only checks that entities match it.
+    hibernate:
+      ddl-auto: validate
+    # Lazy loading must not run SQL while the HTTP response is being written.
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        default_batch_fetch_size: 50
+      jakarta:
+        persistence:
+          lock:
+            timeout: 5000
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 26MB
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  auth:
+    # HS256 signing key. Must be at least 32 bytes. Override in every real environment.
+    jwt-secret: ${JWT_SECRET:}
+    access-token-ttl: 15m
+    refresh-token-ttl: 7d
+    refresh-family-ttl: 30d
+    cookie-secure: ${AUTH_COOKIE_SECURE:true}
+    max-failed-logins: 5
+    lockout-duration: 15m
+    login-rate-limit-per-minute: 20
+  # Origins allowed to call the cookie-based auth endpoints and (in dev) the API via CORS.
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
+  storage:
+    local-root: ${STORAGE_LOCAL_ROOT:./data/uploads}
+  scheduling:
+    enabled: true
