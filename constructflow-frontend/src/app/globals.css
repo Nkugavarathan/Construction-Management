@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
+/*
+ * ConstructFlow design tokens. Components use the Tailwind names (bg-primary, text-muted,
+ * border-border...) generated from @theme below; no component hard-codes a hex value.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cf-primary: #172b4d;
+  --cf-primary-hover: #0f1f3a;
+  --cf-secondary: #0f9f78;
+  --cf-secondary-hover: #0b8463;
+  --cf-background: #f5f7fa;
+  --cf-surface: #ffffff;
+  --cf-surface-muted: #f8fafc;
+  --cf-text: #172b4d;
+  --cf-muted: #64748b;
+  --cf-border: #e2e8f0;
+  --cf-success: #16a34a;
+  --cf-warning: #d97706;
+  --cf-danger: #dc2626;
+  --cf-info: #2563eb;
+  --cf-success-soft: #dcfce7;
+  --cf-warning-soft: #fef3c7;
+  --cf-danger-soft: #fee2e2;
+  --cf-info-soft: #dbeafe;
+  --cf-secondary-soft: #d1fae5;
+  --cf-neutral-soft: #f1f5f9;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--cf-primary);
+  --color-primary-hover: var(--cf-primary-hover);
+  --color-secondary: var(--cf-secondary);
+  --color-secondary-hover: var(--cf-secondary-hover);
+  --color-background: var(--cf-background);
+  --color-surface: var(--cf-surface);
+  --color-surface-muted: var(--cf-surface-muted);
+  --color-text: var(--cf-text);
+  --color-muted: var(--cf-muted);
+  --color-border: var(--cf-border);
+  --color-success: var(--cf-success);
+  --color-warning: var(--cf-warning);
+  --color-danger: var(--cf-danger);
+  --color-info: var(--cf-info);
+  --color-success-soft: var(--cf-success-soft);
+  --color-warning-soft: var(--cf-warning-soft);
+  --color-danger-soft: var(--cf-danger-soft);
+  --color-info-soft: var(--cf-info-soft);
+  --color-secondary-soft: var(--cf-secondary-soft);
+  --color-neutral-soft: var(--cf-neutral-soft);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--cf-background);
+  color: var(--cf-text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible keyboard focus everywhere, not only on custom components. */
+:focus-visible {
+  outline: 2px solid var(--cf-info);
+  outline-offset: 2px;
+}
+
+dialog::backdrop {
+  background: rgb(15 23 42 / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

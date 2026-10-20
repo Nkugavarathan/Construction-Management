@@ -94,12 +94,18 @@ class AuthIntegrationTest extends IntegrationTest {
         refresh(token).andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Two layers stop a cross-site refresh: the CORS filter rejects disallowed origins before the
+     * controller runs, and OriginValidator would reject it again if CORS were ever loosened.
+     */
     @Test
     void refreshFromAForeignOriginIsRejected() throws Exception {
         Org org = fixtures.organization();
         String token = refreshCookie(login(org.user(Role.VIEWER).email(), TestFixtures.PASSWORD).andReturn());
         mvc.perform(post("/api/v1/auth/refresh").cookie(new Cookie("cf_refresh", token)).header("Origin", "https://evil.example"))
-                .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("ORIGIN_NOT_ALLOWED"));
+                .andExpect(status().isForbidden());
+        // Rejected before rotation, so the legitimate session is untouched.
+        refresh(token).andExpect(status().isOk());
     }
 
     @Test

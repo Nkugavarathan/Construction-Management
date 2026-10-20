@@ -1,0 +1,22 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+
+# Backend
+constructflow-backend/target/
+constructflow-backend/data/
+
+# Frontend
+constructflow-frontend/node_modules/
+constructflow-frontend/.next/
+constructflow-frontend/out/
+constructflow-frontend/test-results/
+constructflow-frontend/playwright-report/
+constructflow-frontend/coverage/
+
+# Editors / OS
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
