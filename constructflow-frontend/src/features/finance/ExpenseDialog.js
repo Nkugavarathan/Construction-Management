@@ -62,11 +62,11 @@ export function ExpenseDialog({ expenseId, onClose }) {
           <p className="text-3xl font-semibold tabular-nums">{formatMoney(e.amount, currency)}</p>
           <dl className="grid gap-3 text-sm sm:grid-cols-3">
             <Item label="Category" value={e.category.name} />
-            <Item label="Vendor" value={e.vendorName ?? "—"} />
+            <Item label="Vendor" value={e.vendorName ?? "-"} />
             <Item label="Expense date" value={formatDate(e.expenseDate)} />
             <Item label="Recorded by" value={e.createdBy?.fullName} />
-            <Item label="Submitted" value={e.submittedAt ? formatDateTime(e.submittedAt) : "—"} />
-            <Item label="Decided by" value={e.decidedBy ? `${e.decidedBy.fullName}, ${formatDateTime(e.decidedAt)}` : "—"} />
+            <Item label="Submitted" value={e.submittedAt ? formatDateTime(e.submittedAt) : "-"} />
+            <Item label="Decided by" value={e.decidedBy ? `${e.decidedBy.fullName}, ${formatDateTime(e.decidedAt)}` : "-"} />
           </dl>
 
           <section aria-labelledby="history-heading">

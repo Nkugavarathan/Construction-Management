@@ -52,7 +52,7 @@ export default function RisksPage() {
     { header: "Risk", cell: ({ row }) => (<div><p className="font-medium">{row.original.title}</p>{row.original.mitigation && <p className="line-clamp-1 text-xs text-muted">{row.original.mitigation}</p>}</div>) },
     { header: "L × I", cell: ({ row }) => <span className="tabular-nums">{row.original.likelihood} × {row.original.impact}</span> },
     { header: "Score", meta: { sortField: "score" }, cell: ({ row }) => (<div className="flex items-center gap-2"><span className="font-semibold tabular-nums">{row.original.score}</span><StatusBadge status={row.original.level} /></div>) },
-    { header: "Owner", cell: ({ row }) => row.original.owner?.fullName ?? "—" },
+    { header: "Owner", cell: ({ row }) => row.original.owner?.fullName ?? "-" },
     { header: "Due", meta: { sortField: "dueDate" }, cell: ({ row }) => formatDate(row.original.dueDate) },
     { header: "Status", meta: { sortField: "status" }, cell: ({ row }) => <StatusBadge status={row.original.status} /> },
   ];

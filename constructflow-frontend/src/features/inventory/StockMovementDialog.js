@@ -45,13 +45,13 @@ export function StockMovementDialog({ kind, material, onClose }) {
 
   return (
     <Dialog open onClose={onClose} title={`${cfg.title} · ${material.code}`}
-      description={`${material.name} — ${formatNumber(material.quantityOnHand)} ${material.unit} on hand`}
+      description={`${material.name} - ${formatNumber(material.quantityOnHand)} ${material.unit} on hand`}
       footer={<><Button variant="outline" onClick={onClose}>Cancel</Button><Button disabled={!valid} loading={mutation.isPending} onClick={() => mutation.mutate()}>Confirm</Button></>}>
       <div className="space-y-4">
         {kind === "issue" && (
           <FormField label="Project" required hint="Materials can only be issued to active projects.">
             {(a) => <Select {...a} value={projectId} onChange={(e) => setProjectId(e.target.value)} placeholder="Choose a project"
-              options={(projects.data ?? []).map((p) => ({ value: p.id, label: `${p.code} — ${p.name}` }))} />}
+              options={(projects.data ?? []).map((p) => ({ value: p.id, label: `${p.code} - ${p.name}` }))} />}
           </FormField>
         )}
         <FormField label={`${cfg.label} (${material.unit})`} required

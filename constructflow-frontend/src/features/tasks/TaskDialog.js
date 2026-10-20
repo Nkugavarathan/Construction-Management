@@ -90,11 +90,11 @@ export function TaskDialog({ taskId, onClose }) {
           {task.statusReason && <p className="rounded-md bg-warning-soft px-3 py-2 text-sm text-warning">{task.statusReason}</p>}
           <dl className="grid gap-3 text-sm sm:grid-cols-3">
             <Detail label="Assignee" value={task.assignee?.fullName ?? "Unassigned"} />
-            <Detail label="Milestone" value={task.milestone?.name ?? "—"} />
+            <Detail label="Milestone" value={task.milestone?.name ?? "-"} />
             <Detail label="Weight" value={task.weight} />
             <Detail label="Start" value={formatDate(task.startDate)} />
             <Detail label="Due" value={formatDate(task.dueDate)} />
-            <Detail label="Completed" value={task.completedAt ? formatDateTime(task.completedAt) : "—"} />
+            <Detail label="Completed" value={task.completedAt ? formatDateTime(task.completedAt) : "-"} />
           </dl>
           {task.description && <p className="whitespace-pre-line text-sm text-muted">{task.description}</p>}
 

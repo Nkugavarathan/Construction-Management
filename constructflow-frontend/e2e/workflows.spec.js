@@ -34,7 +34,7 @@ test.describe("ConstructFlow core workflows", () => {
     // Add the site engineer to the project team.
     await page.getByRole("link", { name: "Team" }).last().click();
     await page.getByRole("button", { name: "Add member" }).click();
-    await page.getByLabel("Person").selectOption({ label: "Kasun Fernando — Site engineer" });
+    await page.getByLabel("Person").selectOption({ label: "Kasun Fernando - Site engineer" });
     await page.getByRole("button", { name: "Add", exact: true }).click();
     await expect(page.getByText("Kasun Fernando")).toBeVisible();
 

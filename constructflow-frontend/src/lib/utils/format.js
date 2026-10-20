@@ -5,9 +5,9 @@
 const LOCALE = "en-LK";
 
 export function formatMoney(value, currency = "LKR", { compact = false } = {}) {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") return "-";
   const number = Number(value);
-  if (Number.isNaN(number)) return "—";
+  if (Number.isNaN(number)) return "-";
   return new Intl.NumberFormat(LOCALE, {
     style: "currency",
     currency,
@@ -18,25 +18,25 @@ export function formatMoney(value, currency = "LKR", { compact = false } = {}) {
 }
 
 export function formatNumber(value, { maxFractionDigits = 3 } = {}) {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") return "-";
   return new Intl.NumberFormat(LOCALE, { maximumFractionDigits: maxFractionDigits }).format(Number(value));
 }
 
 export function formatPercent(value) {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") return "-";
   return `${new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 }).format(Number(value))}%`;
 }
 
 /** Dates like "2026-10-20" are calendar dates: format them without shifting through the browser time zone. */
 export function formatDate(value) {
-  if (!value) return "—";
+  if (!value) return "-";
   const [year, month, day] = String(value).slice(0, 10).split("-").map(Number);
   return new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
     .format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 export function formatDateTime(value) {
-  if (!value) return "—";
+  if (!value) return "-";
   return new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 

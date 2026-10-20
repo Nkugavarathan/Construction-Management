@@ -1,4 +1,4 @@
-# ConstructFlow — Phase 0 Blueprint
+# ConstructFlow - Phase 0 Blueprint
 
 > Status: **Draft for review** · Date: 2026-10-20 · Phase: 0 (Requirements & Architecture)
 >
@@ -85,131 +85,131 @@ auditing. Later releases reuse those patterns rather than introduce new ones.
 
 ## 2. User stories and acceptance criteria
 
-Format: **ID — As a _role_, I want _goal_, so that _value_.** Acceptance criteria (AC) are
+Format: **ID - As a _role_, I want _goal_, so that _value_.** Acceptance criteria (AC) are
 written so each can become an automated test. IDs are referenced from tests and commits.
 
-### Epic AUTH — Authentication and organizations
+### Epic AUTH - Authentication and organizations
 
-**AUTH-1** — As a company owner, I want to register my organization and become its
+**AUTH-1** - As a company owner, I want to register my organization and become its
 administrator, so that my team can start using ConstructFlow.
 - AC1: Submitting organization name, my name, email and a password (≥ 12 chars) creates the
   organization, my user and an `ADMIN` membership in one transaction.
 - AC2: An email already registered returns `409` without revealing other account details.
 - AC3: I am logged in afterwards (access token + refresh cookie issued).
 
-**AUTH-2** — As a user, I want to log in with email and password.
+**AUTH-2** - As a user, I want to log in with email and password.
 - AC1: Valid credentials return a 15-minute access token and set an HttpOnly refresh cookie.
 - AC2: Invalid credentials return `401` with a generic message (no "user not found" vs "wrong password" distinction).
 - AC3: After 5 consecutive failures the account is locked for 15 minutes; per-IP rate limit returns `429`.
 - AC4: A user with `must_change_password` is redirected to change it before using the app.
 
-**AUTH-3** — As a user, I want my session to stay alive while I work and end when I log out.
+**AUTH-3** - As a user, I want my session to stay alive while I work and end when I log out.
 - AC1: An expired access token is transparently refreshed once using the refresh cookie.
 - AC2: Each refresh rotates the refresh token; re-using an old refresh token revokes the whole session family.
 - AC3: Logout revokes the refresh token family and clears the cookie; the old refresh token no longer works.
 
-**AUTH-4** — As a user who belongs to several organizations, I want to switch the active organization.
+**AUTH-4** - As a user who belongs to several organizations, I want to switch the active organization.
 - AC1: I can only switch to organizations where my membership is `ACTIVE`.
 - AC2: After switching, every list shows only that organization's data.
 
-**ORG-1** — As an admin, I want to add team members and assign roles.
+**ORG-1** - As an admin, I want to add team members and assign roles.
 - AC1: Admin creates a member (name, email, role, temporary password). Non-admins get `403`.
 - AC2: The last active admin of an organization cannot be demoted or disabled (`409`).
 - AC3: Role changes and member disabling are written to the audit log with before/after role.
 - AC4: A disabled member's next API request fails with `401` even if their access token has not expired.
 
-### Epic PRJ — Projects
+### Epic PRJ - Projects
 
-**PRJ-1** — As a project manager, I want to create a project with code, client, site, dates and budget.
+**PRJ-1** - As a project manager, I want to create a project with code, client, site, dates and budget.
 - AC1: Project code is unique per organization (`409` on duplicate).
 - AC2: Planned completion date must be on or after start date; budget ≥ 0 with 2 decimal places.
 - AC3: New projects start in `PLANNING`; the creator is added as the project's manager member.
 
-**PRJ-2** — As a project manager, I want to move a project through its lifecycle.
+**PRJ-2** - As a project manager, I want to move a project through its lifecycle.
 - AC1: Only transitions in §11.1 are accepted; others return `409` with the allowed transitions.
 - AC2: `COMPLETED` is rejected while open tasks or submitted (pending) expenses exist.
 - AC3: `CANCELLED` requires a reason; completed/cancelled projects become read-only.
 
-**PRJ-3** — As any member, I want a project list I can search, filter by status and sort.
+**PRJ-3** - As any member, I want a project list I can search, filter by status and sort.
 - AC1: I see only projects I'm allowed to see (§9.3).
 - AC2: Each row shows code, name, status, manager, progress %, budget utilization %.
 
-**PRJ-4** — As a project manager, I want to add or remove project members.
+**PRJ-4** - As a project manager, I want to add or remove project members.
 - AC1: Only active organization members can be added.
 - AC2: Removing a member who still has open assigned tasks is rejected with the task count.
 
-### Epic TSK — Tasks, milestones, site reports
+### Epic TSK - Tasks, milestones, site reports
 
-**TSK-1** — As a project manager, I want to create and assign tasks with priority and dates.
+**TSK-1** - As a project manager, I want to create and assign tasks with priority and dates.
 - AC1: Assignee must be a member of the project.
 - AC2: Due date ≥ start date when both are given.
 - AC3: The assignee receives an in-app notification (Release 3; event is recorded from Phase 4).
 
-**TSK-2** — As a site engineer, I want to update the status of tasks assigned to me.
+**TSK-2** - As a site engineer, I want to update the status of tasks assigned to me.
 - AC1: I can only transition tasks assigned to me; transitions follow §11.2.
 - AC2: Moving to `DONE` sets `completed_at`; reopening clears it.
 - AC3: A stale `version` returns `409` instead of overwriting someone else's change.
 
-**TSK-3** — As a project manager, I want to see overdue tasks.
+**TSK-3** - As a project manager, I want to see overdue tasks.
 - AC1: A task is overdue when `due_date` < today (organization timezone) and status ∉ {`DONE`, `CANCELLED`}.
 - AC2: Overdue is computed at query time, never stored.
 
-**TSK-4** — As a project manager, I want milestones that show progress from their tasks.
+**TSK-4** - As a project manager, I want milestones that show progress from their tasks.
 - AC1: Milestone progress = weighted share of its tasks that are `DONE` (§11.3).
 
-**TSK-5** — As a site engineer, I want to submit a daily site report.
+**TSK-5** - As a site engineer, I want to submit a daily site report.
 - AC1: One report per project per date per author; fields: weather, workforce count, work performed, issues.
 - AC2: Reports are immutable after 24 hours (corrections are added as a new note).
 
-### Epic FIN — Budgets and expenses
+### Epic FIN - Budgets and expenses
 
-**FIN-1** — As a project manager, I want to allocate the project budget across categories.
+**FIN-1** - As a project manager, I want to allocate the project budget across categories.
 - AC1: Sum of category allocations ≤ project approved budget.
 
-**FIN-2** — As a site engineer or finance officer, I want to record an expense and submit it.
+**FIN-2** - As a site engineer or finance officer, I want to record an expense and submit it.
 - AC1: Draft expenses can be edited or deleted by their creator; submitted ones cannot.
 - AC2: Amount > 0, two decimal places, expense date not in the future, category required.
 - AC3: Expenses cannot be added to `COMPLETED` or `CANCELLED` projects.
 
-**FIN-3** — As a finance officer, I want to approve or reject submitted expenses.
+**FIN-3** - As a finance officer, I want to approve or reject submitted expenses.
 - AC1: I cannot approve or reject an expense I submitted (`403`, segregation of duties).
 - AC2: Rejection requires a comment.
 - AC3: Approval updates status, writes an `expense_approvals` row and an audit event in one transaction; any failure rolls back all three.
 - AC4: Two approvers acting simultaneously → exactly one succeeds, the other receives `409`.
 
-**FIN-4** — As a finance officer, I want to correct an approved expense without editing it.
+**FIN-4** - As a finance officer, I want to correct an approved expense without editing it.
 - AC1: I create a **reversal** linked to the original (negative amount equal to the original), which itself goes through approval.
 - AC2: An expense can be reversed at most once.
 
-**FIN-5** — As a project manager, I want a financial summary per project.
+**FIN-5** - As a project manager, I want a financial summary per project.
 - AC1: Shows budget, approved spend, pending spend, remaining, utilization %, variance per category (§11.4).
 
-### Epic INV — Materials and inventory
+### Epic INV - Materials and inventory
 
-**INV-1** — As a storekeeper, I want a material catalogue (code, name, unit, reorder level).
+**INV-1** - As a storekeeper, I want a material catalogue (code, name, unit, reorder level).
 - AC1: Material code unique per organization; unit from a fixed list (`BAG`, `KG`, `TONNE`, `M`, `M2`, `M3`, `LITRE`, `PIECE`, ...).
 
-**INV-2** — As a storekeeper, I want to record receipts, issues to projects and adjustments.
+**INV-2** - As a storekeeper, I want to record receipts, issues to projects and adjustments.
 - AC1: Every change writes one `inventory_movements` row (type, signed quantity, balance after, actor, reason, reference).
 - AC2: An issue larger than stock on hand returns `409`; stock never goes negative.
 - AC3: Adjustments require a reason.
 
-**INV-3** — As the business, I want concurrent issues to never oversell stock.
+**INV-3** - As the business, I want concurrent issues to never oversell stock.
 - AC1: With stock 10, ten parallel requests to issue 2 each → exactly 5 succeed, 5 get `409`, final stock 0, ledger sum = 0.
 
-**INV-4** — As a storekeeper, I want to see low-stock materials and the movement history.
+**INV-4** - As a storekeeper, I want to see low-stock materials and the movement history.
 - AC1: Low stock = quantity on hand ≤ reorder level.
 
-### Epic AUD — Audit
+### Epic AUD - Audit
 
-**AUD-1** — As an admin, I want an audit trail of important changes.
+**AUD-1** - As an admin, I want an audit trail of important changes.
 - AC1: Events listed in §11.7 produce an audit row with actor, org, project, action, entity, correlation ID and safe change summary.
 - AC2: No API exists to update or delete audit events; a database trigger rejects `UPDATE`/`DELETE`.
 - AC3: Audit rows never contain passwords, tokens or secrets.
 
-### Epic DSH — Dashboard
+### Epic DSH - Dashboard
 
-**DSH-1** — As any user, I want a dashboard with real metrics for my visible projects.
+**DSH-1** - As any user, I want a dashboard with real metrics for my visible projects.
 - AC1: Active projects, overdue tasks, budget utilization, low-stock count, upcoming milestones (14 days).
 - AC2: All numbers come from the API and respect my permissions.
 
@@ -303,11 +303,11 @@ sequenceDiagram
   F->>C: Authenticated CurrentUser {userId, orgId, role}
   C->>C: @PreAuthorize("hasAuthority('EXPENSE_APPROVE')")<br/>@Valid ApproveExpenseRequest
   C->>S: approve(currentUser, id, request)
-  Note over S: @Transactional — one unit of work
+  Note over S: @Transactional - one unit of work
   S->>R: findByIdAndOrganizationId(id, orgId)
   R->>DB: SELECT ... WHERE id=? AND organization_id=?
   S->>P: assertCanApprove(user, expense)<br/>(not own submission, project scope, threshold)
-  S->>S: expense.approve(user, now) — state machine
+  S->>S: expense.approve(user, now) - state machine
   S->>R: save (UPDATE ... WHERE id=? AND version=3)
   S->>A: record(EXPENSE_APPROVED, before/after)
   S-->>DB: COMMIT (expense + approval row + audit row)
@@ -336,7 +336,7 @@ with field errors.
 
 ## 5. Backend folder structure
 
-Repository layout (monorepo — one Git repo, two apps):
+Repository layout (monorepo - one Git repo, two apps):
 
 ```text
 D:\construction\
@@ -525,7 +525,7 @@ Status colour mapping is centralized in `StatusBadge` (e.g. `ACTIVE`→success, 
 | `suppliers` | org-scoped, `name`, contact, `tax_id`, `active`; UNIQUE(org, name) |
 | `purchase_orders` | `number`, `supplier_id`, `project_id` NULL (stock order) , `status`, `total_amount`, `created_by`, `submitted_by`, `approved_by` CHECK ≠ `created_by`, `version` |
 | `purchase_order_items` | `material_id`, `quantity_ordered`, `quantity_received` ≤ ordered, `unit_price` numeric(15,4), `line_total` numeric(15,2) |
-| `goods_receipts` | `purchase_order_id`, `received_by`, `delivery_note_ref`, `idempotency_key` — UNIQUE(`organization_id`,`idempotency_key`) and UNIQUE(`purchase_order_id`,`delivery_note_ref`) |
+| `goods_receipts` | `purchase_order_id`, `received_by`, `delivery_note_ref`, `idempotency_key` - UNIQUE(`organization_id`,`idempotency_key`) and UNIQUE(`purchase_order_id`,`delivery_note_ref`) |
 | `goods_receipt_items` | `purchase_order_item_id`, `quantity` > 0 → produces one `inventory_movements` RECEIPT each |
 | `documents` | `project_id`, `title`, `category`, `current_version_no`, `created_by` |
 | `document_versions` | `document_id`, `version_no` UNIQUE per document, `storage_key` (generated), `original_filename` (display only), `content_type`, `size_bytes`, `sha256`, `uploaded_by`, `uploaded_at` |
@@ -544,7 +544,7 @@ Status colour mapping is centralized in `StatusBadge` (e.g. `ACTIVE`→success, 
 | `expenses (project_id, status)` | Financial summary aggregation |
 | `expenses (organization_id, status, submitted_at)` | Approval queue |
 | `inventory_movements (material_id, occurred_at desc)` | Movement history |
-| `materials (organization_id) WHERE quantity_on_hand <= reorder_level` | Not indexable as-is (compares columns); low-stock is a filtered scan of a small table — acceptable |
+| `materials (organization_id) WHERE quantity_on_hand <= reorder_level` | Not indexable as-is (compares columns); low-stock is a filtered scan of a small table - acceptable |
 | `audit_events (organization_id, created_at desc)`, `(entity_type, entity_id)` | Audit log browse / entity history |
 | `refresh_tokens (family_id)` | Revoke family |
 
@@ -766,43 +766,43 @@ Roles are coarse; code checks **permissions**, which keeps checks stable if role
 mapping is a static map in `RolePermissions` (one place to read, one place to test).
 
 Scope legend: **Org** = any record in the organization · **Proj** = only projects where the user is a project member
-· **Own** = only records the user created or is assigned to · — = denied.
+· **Own** = only records the user created or is assigned to · - = denied.
 
 | Permission | ADMIN | PROJECT_MANAGER | SITE_ENGINEER | FINANCE_OFFICER | STOREKEEPER | VIEWER |
 |---|---|---|---|---|---|---|
-| `ORG_SETTINGS_MANAGE` | Org | — | — | — | — | — |
-| `MEMBER_MANAGE` (add, role, disable) | Org | — | — | — | — | — |
-| `MEMBER_READ` | Org | Org | Org | Org | Org | — |
-| `PROJECT_CREATE` | Org | Org | — | — | — | — |
+| `ORG_SETTINGS_MANAGE` | Org | - | - | - | - | - |
+| `MEMBER_MANAGE` (add, role, disable) | Org | - | - | - | - | - |
+| `MEMBER_READ` | Org | Org | Org | Org | Org | - |
+| `PROJECT_CREATE` | Org | Org | - | - | - | - |
 | `PROJECT_READ` | Org | Proj | Proj | Org | Org | Proj |
-| `PROJECT_UPDATE` / transition | Org | Proj (manager) | — | — | — | — |
-| `PROJECT_MEMBER_MANAGE` | Org | Proj (manager) | — | — | — | — |
-| `TASK_MANAGE` (create, assign, edit, cancel) | Org | Proj | — | — | — | — |
-| `TASK_UPDATE_STATUS` | Org | Proj | Own (assignee) | — | — | — |
-| `MILESTONE_MANAGE` | Org | Proj | — | — | — | — |
-| `SITE_REPORT_CREATE` | Org | Proj | Proj | — | — | — |
-| `SITE_REPORT_READ` | Org | Proj | Proj | Org | — | Proj |
-| `BUDGET_MANAGE` | Org | Proj | — | Org | — | — |
-| `FINANCE_READ` (expenses, summaries) | Org | Proj | Own | Org | — | — |
-| `EXPENSE_CREATE` | Org | Proj | Proj | Org | — | — |
-| `EXPENSE_APPROVE` | Org | Proj, ≤ threshold | — | Org | — | — |
-| `MATERIAL_MANAGE` | Org | — | — | — | Org | — |
-| `INVENTORY_READ` | Org | Org | Org | Org | Org | — |
-| `INVENTORY_RECEIVE` / `INVENTORY_ISSUE` | Org | — | — | — | Org | — |
-| `INVENTORY_ADJUST` | Org | — | — | — | Org | — |
-| `AUDIT_READ` | Org | — | — | — | — | — |
+| `PROJECT_UPDATE` / transition | Org | Proj (manager) | - | - | - | - |
+| `PROJECT_MEMBER_MANAGE` | Org | Proj (manager) | - | - | - | - |
+| `TASK_MANAGE` (create, assign, edit, cancel) | Org | Proj | - | - | - | - |
+| `TASK_UPDATE_STATUS` | Org | Proj | Own (assignee) | - | - | - |
+| `MILESTONE_MANAGE` | Org | Proj | - | - | - | - |
+| `SITE_REPORT_CREATE` | Org | Proj | Proj | - | - | - |
+| `SITE_REPORT_READ` | Org | Proj | Proj | Org | - | Proj |
+| `BUDGET_MANAGE` | Org | Proj | - | Org | - | - |
+| `FINANCE_READ` (expenses, summaries) | Org | Proj | Own | Org | - | - |
+| `EXPENSE_CREATE` | Org | Proj | Proj | Org | - | - |
+| `EXPENSE_APPROVE` | Org | Proj, ≤ threshold | - | Org | - | - |
+| `MATERIAL_MANAGE` | Org | - | - | - | Org | - |
+| `INVENTORY_READ` | Org | Org | Org | Org | Org | - |
+| `INVENTORY_RECEIVE` / `INVENTORY_ISSUE` | Org | - | - | - | Org | - |
+| `INVENTORY_ADJUST` | Org | - | - | - | Org | - |
+| `AUDIT_READ` | Org | - | - | - | - | - |
 | `DASHBOARD_READ` | Org | Proj | Proj | Org | Org | Proj |
 | *Release 2–3* | | | | | | |
-| `SUPPLIER_MANAGE` | Org | — | — | — | Org | — |
-| `PO_CREATE` | Org | Proj | — | — | Org | — |
-| `PO_APPROVE` | Org | Proj | — | Org | — | — |
-| `PO_RECEIVE` | Org | — | — | — | Org | — |
-| `DOCUMENT_UPLOAD` | Org | Proj | Proj | — | — | — |
-| `DOCUMENT_READ` | Org | Proj | Proj | Org | — | Proj |
-| `RISK_MANAGE` | Org | Proj | — | — | — | — |
-| `RISK_READ` | Org | Proj | Proj | — | — | Proj |
-| `INCIDENT_REPORT` | Org | Proj | Proj | — | Org | — |
-| `INCIDENT_MANAGE` (investigate/close) | Org | Proj | — | — | — | — |
+| `SUPPLIER_MANAGE` | Org | - | - | - | Org | - |
+| `PO_CREATE` | Org | Proj | - | - | Org | - |
+| `PO_APPROVE` | Org | Proj | - | Org | - | - |
+| `PO_RECEIVE` | Org | - | - | - | Org | - |
+| `DOCUMENT_UPLOAD` | Org | Proj | Proj | - | - | - |
+| `DOCUMENT_READ` | Org | Proj | Proj | Org | - | Proj |
+| `RISK_MANAGE` | Org | Proj | - | - | - | - |
+| `RISK_READ` | Org | Proj | Proj | - | - | Proj |
+| `INCIDENT_REPORT` | Org | Proj | Proj | - | Org | - |
+| `INCIDENT_MANAGE` (investigate/close) | Org | Proj | - | - | - | - |
 
 Cross-cutting rules (apply on top of the matrix, including for ADMIN):
 1. **Segregation of duties**: nobody approves or rejects their own expense or purchase order.
@@ -813,9 +813,9 @@ Cross-cutting rules (apply on top of the matrix, including for ADMIN):
 
 ### 9.3 How it is enforced (two layers)
 
-1. **Coarse check — controller**: `@PreAuthorize("hasAuthority('EXPENSE_APPROVE')")`. The user's permissions are
+1. **Coarse check - controller**: `@PreAuthorize("hasAuthority('EXPENSE_APPROVE')")`. The user's permissions are
    derived from their membership role and placed on the `Authentication` as authorities.
-2. **Resource check — service**: policy classes (`ProjectAccessPolicy`, `ExpensePolicy`) check scope (is the user a member of
+2. **Resource check - service**: policy classes (`ProjectAccessPolicy`, `ExpensePolicy`) check scope (is the user a member of
    *this* project? is this *their* submission? is the amount under the threshold?). These need the loaded entity, so they
    cannot live in an annotation.
 
@@ -911,7 +911,7 @@ Tasks cannot be created or changed on closed projects.
 - **Task-weighted, computed on read, never stored.** For a project or milestone:
   `progress = Σ weight(tasks DONE) / Σ weight(tasks not CANCELLED) × 100`, rounded down to an integer; 0 when there are no tasks.
 - `weight` (1–10, default 1) lets a PM say "pour foundation" matters more than "order signage".
-- Because it is derived from task rows in one SQL aggregate, it can never disagree with the tasks — which is exactly the
+- Because it is derived from task rows in one SQL aggregate, it can never disagree with the tasks - which is exactly the
   inconsistency the brief warns about. Cost: an aggregate query per list page (one `GROUP BY project_id` query, not N queries).
 
 ### 11.4 Expense workflow and financial metrics
@@ -925,7 +925,7 @@ Approved expenses are never edited; corrections use a **reversal** (FIN-4).
 | Pending spend | Σ amount of `SUBMITTED` expenses |
 | Remaining budget | approved budget − approved spend |
 | Utilization % | approved spend ÷ approved budget × 100 (2 dp; "n/a" if budget = 0) |
-| Projected utilization % | (approved + pending) ÷ approved budget × 100 — shown as a warning indicator |
+| Projected utilization % | (approved + pending) ÷ approved budget × 100 - shown as a warning indicator |
 | Category variance | allocation − approved spend in category (negative = over budget) |
 
 Drafts and rejected expenses never affect metrics. Over-budget approval is **allowed but flagged** in the approval
@@ -945,7 +945,7 @@ dialog (construction overruns are real; blocking them would push spending off-sy
 - Lifecycle: `DRAFT → SUBMITTED → APPROVED → PARTIALLY_RECEIVED → RECEIVED`; `SUBMITTED → DRAFT` (returned with reason);
   `DRAFT/SUBMITTED/APPROVED → CANCELLED`; `PARTIALLY_RECEIVED → CLOSED` (short-close when the supplier cannot deliver the rest).
 - A receipt: locks the PO row, validates each line `received + qty ≤ ordered`, inserts the goods receipt, increments
-  `quantity_received`, posts inventory movements, updates PO status, writes audit — **one transaction**.
+  `quantity_received`, posts inventory movements, updates PO status, writes audit - **one transaction**.
 - **Duplicate protection (two layers)**: client sends an `Idempotency-Key` header (UUID generated when the receive dialog
   opens); a unique constraint on `(organization_id, idempotency_key)` makes a retry return the original receipt instead of
   posting again. A unique `(purchase_order_id, delivery_note_ref)` prevents the same delivery note being booked twice by two
@@ -985,7 +985,7 @@ Base path `/api/v1`. JSON. Authenticated endpoints require `Authorization: Beare
 - **Pagination**: `?page=0&size=20&sort=createdAt,desc` → `{ "content": [...], "page": 0, "size": 20, "totalElements": 134, "totalPages": 7 }`. `size` max 100.
 - **Filtering**: plain query params (`?status=ACTIVE&q=kandy`).
 - **Optimistic locking**: mutable resources expose `version`; `PATCH` and transition bodies must include it; mismatch → `409`.
-- **State changes** are explicit `POST` sub-resources (`/approve`, `/transitions`) — never `GET`, never a generic status field in `PATCH`.
+- **State changes** are explicit `POST` sub-resources (`/approve`, `/transitions`) - never `GET`, never a generic status field in `PATCH`.
 - **Errors**: RFC 9457 Problem Details, `Content-Type: application/problem+json`:
 
 ```json
@@ -1009,7 +1009,7 @@ Base path `/api/v1`. JSON. Authenticated endpoints require `Authorization: Beare
 | 403 | Authenticated but not permitted (incl. segregation of duties) |
 | 404 | Not found **or** belongs to another organization |
 | 409 | Invalid state transition, duplicate unique value, stale `version`, insufficient stock |
-| 422 | Not used — 409/400 cover our cases; keeps the contract simple |
+| 422 | Not used - 409/400 cover our cases; keeps the contract simple |
 | 429 | Login rate limit |
 
 ### 12.2 Endpoints
@@ -1039,7 +1039,7 @@ Base path `/api/v1`. JSON. Authenticated endpoints require `Authorization: Beare
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/projects` | `?q=&status=&managerId=&page=&size=&sort=` — includes computed `progress`, `budgetUtilization` |
+| GET | `/projects` | `?q=&status=&managerId=&page=&size=&sort=` - includes computed `progress`, `budgetUtilization` |
 | POST | `/projects` | `CreateProjectRequest` → `201` |
 | GET | `/projects/{id}` | `ProjectResponse` |
 | PATCH | `/projects/{id}` | `UpdateProjectRequest` (incl. `version`; not status) |
@@ -1083,7 +1083,7 @@ Base path `/api/v1`. JSON. Authenticated endpoints require `Authorization: Beare
 | Method | Path | Notes |
 |---|---|---|
 | GET / POST | `/materials` | `?q=&lowStock=true` |
-| GET / PATCH | `/materials/{id}` | Catalogue fields only — stock is never PATCHed |
+| GET / PATCH | `/materials/{id}` | Catalogue fields only - stock is never PATCHed |
 | GET | `/materials/{id}/movements` | Paginated ledger |
 | POST | `/inventory/receipts` | `{materialId, quantity, reason, reference?}` (direct receipt; PO receipts in Release 2) |
 | POST | `/inventory/issues` | `{materialId, projectId, quantity, note?}` |
@@ -1172,11 +1172,11 @@ Test data: a `TestDataFactory` creates orgs/users/projects via repositories for 
 
 ## 16. Initial setup commands
 
-These are for **Phase 1** — nothing below has been run yet. Commands are PowerShell (your default shell).
+These are for **Phase 1** - nothing below has been run yet. Commands are PowerShell (your default shell).
 
 ```powershell
 # 0. Toolchain (one-time)
-#    a) JDK 21 — only JDK 17 is installed. Install Temurin 21:
+#    a) JDK 21 - only JDK 17 is installed. Install Temurin 21:
 winget install EclipseAdoptium.Temurin.21.JDK
 #    b) Fix JAVA_HOME: it currently has a leading space (" C:\Program Files\Java\jdk-17"), which breaks mvn/mvnw.
 #       Set it to the JDK 21 folder winget installed (check the exact path first):
@@ -1231,9 +1231,9 @@ cd constructflow-frontend; npm run dev
 | ADR-0006 | Idempotency key + natural-key uniqueness for goods receipts | Idempotency key only | Key covers retries; delivery-note uniqueness covers two people booking the same paper note |
 | ADR-0007 | TanStack Query for server state | Hand-rolled `useEffect` fetching | Caching, retries, invalidation and loading/error states are the bug-prone parts; one well-known dependency |
 
-### 17.2 Assumptions — please confirm or correct
+### 17.2 Assumptions - please confirm or correct
 
-1. **Java 21** (install Temurin 21). Alternative: stay on the installed Java 17 — works, but 21 is the stronger CV signal.
+1. **Java 21** (install Temurin 21). Alternative: stay on the installed Java 17 - works, but 21 is the stronger CV signal.
 2. **Default currency `LKR` and timezone `Asia/Colombo`** for seed data; both are per-organization settings.
 3. **Monorepo** (`constructflow-backend/` + `constructflow-frontend/` in one GitHub repo).
 4. **Onboarding without email** in the MVP (admin sets a temporary password; forced change on first login).

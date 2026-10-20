@@ -85,7 +85,7 @@ function AddMemberForm({ onDone }) {
     })}>
       <TextField label="Full name" register={register("fullName")} error={errors.fullName?.message} required />
       <TextField label="Email" type="email" register={register("email")} error={errors.email?.message} required />
-      <SelectField label="Role" options={ROLES.map((r) => ({ value: r, label: `${humanize(r)} — ${ROLE_HELP[r]}` }))} register={register("role")} error={errors.role?.message} required />
+      <SelectField label="Role" options={ROLES.map((r) => ({ value: r, label: `${humanize(r)} - ${ROLE_HELP[r]}` }))} register={register("role")} error={errors.role?.message} required />
       <TextField label="Temporary password" type="password" autoComplete="new-password" hint="Share it securely; at least 12 characters." register={register("temporaryPassword")} error={errors.temporaryPassword?.message} required />
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={onDone}>Cancel</Button>

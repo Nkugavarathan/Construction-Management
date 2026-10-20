@@ -90,7 +90,7 @@ function AddMemberDialog({ open, onClose, projectId, existing }) {
         <FormField label="Person" required>
           {(a11y) => (
             <Select {...a11y} value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="Choose a team member"
-              options={candidates.map((m) => ({ value: m.user.id, label: `${m.user.fullName} — ${humanize(m.role)}` }))} />
+              options={candidates.map((m) => ({ value: m.user.id, label: `${m.user.fullName} - ${humanize(m.role)}` }))} />
           )}
         </FormField>
         <FormField label="Project role" hint={canBeManager ? undefined : "Only project managers and admins can manage a project."}>

@@ -34,8 +34,8 @@ export default function MaterialPage() {
         {Number(row.original.quantity) > 0 ? "+" : ""}{formatNumber(row.original.quantity)}
       </span>) },
     { header: "Balance", meta: { className: "text-right" }, cell: ({ row }) => <span className="block text-right tabular-nums">{formatNumber(row.original.balanceAfter)}</span> },
-    { header: "Project / reference", cell: ({ row }) => row.original.project ? `${row.original.project.code}` : row.original.referenceType ? humanize(row.original.referenceType) : "—" },
-    { header: "Reason", cell: ({ row }) => <span className="text-muted">{row.original.reason ?? "—"}</span> },
+    { header: "Project / reference", cell: ({ row }) => row.original.project ? `${row.original.project.code}` : row.original.referenceType ? humanize(row.original.referenceType) : "-" },
+    { header: "Reason", cell: ({ row }) => <span className="text-muted">{row.original.reason ?? "-"}</span> },
     { header: "By", cell: ({ row }) => row.original.actor.fullName },
   ];
 

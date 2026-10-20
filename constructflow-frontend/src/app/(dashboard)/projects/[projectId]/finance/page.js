@@ -143,7 +143,7 @@ function AllocationDialog({ projectId, summary, currency, onClose }) {
           </label>
         ))}
         <p className={cn("border-t border-border pt-3 text-right text-sm font-medium", over ? "text-danger" : "")}>
-          Total {formatMoney(total, currency)} {over && "— exceeds the approved budget"}
+          Total {formatMoney(total, currency)} {over && "- exceeds the approved budget"}
         </p>
       </div>
     </Dialog>

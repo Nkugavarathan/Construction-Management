@@ -57,7 +57,7 @@ export function PurchaseOrderForm({ order, onSubmit, onCancel, submitLabel = "Sa
       <div className="grid gap-4 sm:grid-cols-3">
         <SelectField label="Supplier" required options={(suppliers.data ?? []).filter((s) => s.active).map((s) => ({ value: s.id, label: s.name }))}
           placeholder="Choose…" register={register("supplierId")} error={errors.supplierId?.message} />
-        <SelectField label="For project" options={(projects.data ?? []).map((p) => ({ value: p.id, label: `${p.code} — ${p.name}` }))}
+        <SelectField label="For project" options={(projects.data ?? []).map((p) => ({ value: p.id, label: `${p.code} - ${p.name}` }))}
           placeholder={me.role === "PROJECT_MANAGER" ? "Choose a project" : "General stock"} register={register("projectId")} error={errors.projectId?.message}
           hint={me.role === "PROJECT_MANAGER" ? "Project managers order for projects they manage." : undefined} />
         <TextField label="Expected delivery" type="date" register={register("expectedDate")} error={errors.expectedDate?.message} />
@@ -71,7 +71,7 @@ export function PurchaseOrderForm({ order, onSubmit, onCancel, submitLabel = "Sa
             <div key={field.id} className="grid gap-2 sm:grid-cols-[1fr_140px_160px_auto] sm:items-start">
               <div>
                 <Select aria-label={`Material, line ${index + 1}`} {...register(`items.${index}.materialId`)} placeholder="Material…"
-                  options={(materials.data ?? []).filter((m) => m.active).map((m) => ({ value: m.id, label: `${m.code} — ${m.name} (${m.unit})` }))}
+                  options={(materials.data ?? []).filter((m) => m.active).map((m) => ({ value: m.id, label: `${m.code} - ${m.name} (${m.unit})` }))}
                   aria-invalid={errors.items?.[index]?.materialId ? true : undefined} />
                 {errors.items?.[index]?.materialId && <p className="mt-1 text-xs text-danger">{errors.items[index].materialId.message}</p>}
               </div>

@@ -74,8 +74,8 @@ function Suppliers() {
   const list = usePagedQuery(["suppliers"], "/suppliers", { filters: { q, includeInactive: true }, initialSort: "name,asc" });
   const columns = [
     { header: "Supplier", meta: { sortField: "name" }, cell: ({ row }) => (<div><p className="font-medium">{row.original.name}</p><p className="text-xs text-muted">{row.original.address ?? ""}</p></div>) },
-    { header: "Contact", cell: ({ row }) => [row.original.contactName, row.original.phone, row.original.email].filter(Boolean).join(" · ") || "—" },
-    { header: "Tax ID", cell: ({ row }) => row.original.taxId ?? "—" },
+    { header: "Contact", cell: ({ row }) => [row.original.contactName, row.original.phone, row.original.email].filter(Boolean).join(" · ") || "-" },
+    { header: "Tax ID", cell: ({ row }) => row.original.taxId ?? "-" },
     { header: "Status", cell: ({ row }) => <Badge tone={row.original.active ? "success" : "neutral"}>{row.original.active ? "Active" : "Inactive"}</Badge> },
   ];
   return (

@@ -11,7 +11,7 @@ export default function AuthLayout({ children }) {
           <span className="text-lg font-semibold">ConstructFlow</span>
         </div>
         <div className="max-w-md">
-          <h2 className="text-3xl font-semibold leading-tight">Every site, every cost, every delivery — in one place.</h2>
+          <h2 className="text-3xl font-semibold leading-tight">Every site, every cost, every delivery - in one place.</h2>
           <p className="mt-4 text-white/70">
             Plan projects, approve expenses, track stock and receive purchase orders with a full audit trail.
           </p>

@@ -27,7 +27,7 @@ export default function ProjectOverviewPage() {
   if (!project) return null;
   const details = [
     ["Client", project.clientName],
-    ["Client contact", project.clientContact ?? "—"],
+    ["Client contact", project.clientContact ?? "-"],
     ["Site", project.siteAddress],
     ["Project manager", project.manager?.fullName],
     ["Start", formatDate(project.startDate)],

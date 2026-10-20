@@ -93,7 +93,7 @@ export default function PurchaseOrderPage() {
         </Card>
         <Card title="Details" bodyClassName="space-y-3 p-4 text-sm">
           <p><span className="text-muted">Expected delivery:</span> {formatDate(po.expectedDate)}</p>
-          <p><span className="text-muted">Approved by:</span> {po.approvedBy ? `${po.approvedBy.fullName}, ${formatDateTime(po.approvedAt)}` : "—"}</p>
+          <p><span className="text-muted">Approved by:</span> {po.approvedBy ? `${po.approvedBy.fullName}, ${formatDateTime(po.approvedAt)}` : "-"}</p>
           {po.notes && <p className="whitespace-pre-line text-muted">{po.notes}</p>}
         </Card>
       </div>
@@ -104,7 +104,7 @@ export default function PurchaseOrderPage() {
             {receipts.data.map((r) => (
               <li key={r.id} className="rounded-md border border-border p-3">
                 <p className="font-medium">Delivery note {r.deliveryNoteRef} <span className="font-normal text-muted">· {r.receivedBy.fullName}, {formatDateTime(r.receivedAt)}</span></p>
-                <ul className="mt-1 text-muted">{r.items.map((i) => <li key={i.purchaseOrderItemId}>{i.materialCode} — {formatNumber(i.quantity)}</li>)}</ul>
+                <ul className="mt-1 text-muted">{r.items.map((i) => <li key={i.purchaseOrderItemId}>{i.materialCode} - {formatNumber(i.quantity)}</li>)}</ul>
               </li>
             ))}
           </ul>
