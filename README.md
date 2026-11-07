@@ -4,6 +4,16 @@ ConstructFlow is a multi-tenant web app for running construction projects. It is
 
 It covers the full flow of a project in one place: who is on it, what tasks are due, how much has been spent against the budget, what material is in stock, what was ordered and received, and what risks and safety incidents have come up. Every important action is permission-checked and recorded in an audit log.
 
+## Screenshots
+
+**Dashboard.** Active projects, overdue tasks, budget used, low-stock materials, upcoming milestones, spend by category, and open risks.
+
+![ConstructFlow dashboard](docs/screenshots/dashboard.png)
+
+**Projects.** Every project you can access, with its status, manager, due date, progress, and budget spent. You can search and filter by status.
+
+![ConstructFlow projects list](docs/screenshots/projects.png)
+
 ## Features
 
 | Area | What it does |
